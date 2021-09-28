@@ -1,4 +1,4 @@
-# Adapter Server
+# Adaptor Server
 
 ## Run
 
