@@ -29,11 +29,7 @@ func main() {
 		})
 	})
 	router.POST("/data", dataHandler)
-	addr := "127.0.0.1:8000"
-	if gin.EnvGinMode == gin.ReleaseMode {
-		addr = "0.0.0.0:8000"
-	}
-	router.Run(addr)
+	router.Run(":8000")
 }
 
 func dataHandler(c *gin.Context) {
