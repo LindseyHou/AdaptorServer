@@ -33,11 +33,16 @@ func main() {
 }
 
 func dataHandler(c *gin.Context) {
-	var m map[string]interface{}
-	err := c.Bind(&m)
-	if err != nil {
-		return
+	type fireData struct {
+		Data     map[string]interface{} `json:"data"`
+		DataCode string                 `json:"dataCode"`
+		PostTime string                 `json:"postTime"`
 	}
-	log.WithFields(logrus.Fields{"data": m}).Info(c.Request.URL)
+	var data fireData
+	if err := c.Bind(&data); err != nil {
+		log.Info(c.Request.URL, "bind failed")
+		c.AbortWithStatus(400)
+	}
+	log.WithFields(logrus.Fields{"data": data}).Info(c.Request.URL)
 	c.AbortWithStatus(204)
 }
