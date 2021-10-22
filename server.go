@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"io"
+	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -44,8 +47,19 @@ func dataHandler(c *gin.Context) {
 		log.Info(c.Request.URL, "bind failed")
 		c.AbortWithStatus(400)
 	}
-	res, _ := convert_json(data)
-	log.WithFields(logrus.Fields{"data": data, "converted": res}).Info(c.Request.URL)
+	values, _ := convert_json(data)
+	json_data, err := json.Marshal(values)
+	if err != nil {
+		log.Fatal(err)
+	}
+	resp, err := http.Post("http://127.0.0.1:8008/api/v1/data/status", "application/json",
+		bytes.NewBuffer(json_data))
+	if err != nil {
+		log.Fatal(err)
+	}
+	var res map[string]interface{}
+	json.NewDecoder(resp.Body).Decode(&res)
+	log.WithFields(logrus.Fields{"data": data, "res": res["json"]}).Info(c.Request.URL)
 	c.AbortWithStatus(204)
 }
 
