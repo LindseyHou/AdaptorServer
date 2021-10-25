@@ -101,3 +101,5 @@ $RECYCLE.BIN/
 
 *.log
 /server
+.env
+/test
